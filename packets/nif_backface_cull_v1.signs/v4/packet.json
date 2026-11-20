@@ -1,0 +1,373 @@
+{
+  "packet_schema": 1,
+  "id": "nif_backface_cull_v1.signs",
+  "version": 4,
+  "rule": "nif_backface_cull_v1",
+  "rule_status_before": "supported",
+  "question": "When the camera looks at the back of a single-sided sign, does the game leave the sign undrawn while the same sign is drawn from the front?",
+  "estimated_minutes": 16,
+  "requirements": {
+    "game_version": "1.10.163.0",
+    "f4se_version": "0.6.23",
+    "f4se_release_index": 25,
+    "plugin_min_version": 9,
+    "executable": {
+      "file": "Fallout4.exe",
+      "size": 65503104,
+      "sha256": "55f57947db9e05575122fae1088f0b0247442f11e566b56036caa0ac93329c36"
+    },
+    "active_plugins": [
+      {
+        "name": "Fallout4.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCRobot.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop01.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCCoast.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop02.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop03.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCNukaWorld.esm",
+        "kind": "full"
+      },
+      {
+        "name": "OSPBench2.esp",
+        "kind": "full"
+      }
+    ],
+    "resolution": [
+      1280,
+      720
+    ],
+    "antialiasing": {
+      "key": "SAntiAliasing:Display",
+      "mode": "FXAA",
+      "value_text": "FXAA",
+      "value_text_pinned": true,
+      "other_mode_texts": {
+        "TAA": "TAA"
+      },
+      "evidence": "Round 26 (16/11/2026, packet version 3, Wine on macOS) found no setting named sAntiAliasing:Display and one setting SAntiAliasing:Display in the prefs list, a string whose effective value was exactly FXAA, with the INI text sAntiAliasing=FXAA under [Display] in Fallout4Prefs.ini. Round 25 recorded the effective value TAA under the name sAntiAliasing:Display for the INI text TAA. Why the spelling differed between the two runs is not known; a run that finds the setting only under another spelling leaves the requirement unverified."
+    },
+    "data_unmodded": true,
+    "hashed_files": [
+      "Fallout4.esm",
+      "DLCRobot.esm",
+      "DLCworkshop01.esm",
+      "DLCCoast.esm",
+      "DLCworkshop02.esm",
+      "DLCworkshop03.esm",
+      "DLCNukaWorld.esm",
+      "Fallout4 - Meshes.ba2",
+      "Fallout4 - Materials.ba2",
+      "Fallout4 - Shaders.ba2",
+      "Fallout4 - Textures1.ba2"
+    ],
+    "ini_keys": [
+      "iSize W:Display",
+      "iSize H:Display",
+      "SAntiAliasing:Display",
+      "bFull Screen:Display",
+      "iPresentInterval:Display",
+      "fDefaultWorldFOV:Display",
+      "fDefault1stPersonFOV:Display",
+      "sScreenShotBaseName:Display",
+      "iScreenShotIndex:Display",
+      "fAutosaveEveryXMins:SaveGame",
+      "bDisableAutoSave:SaveGame",
+      "sResourceDataDirsFinal:Archive",
+      "bInvalidateOlderFiles:Archive",
+      "bSaveOnTravel",
+      "bSaveOnWait",
+      "bSaveOnRest",
+      "bSaveOnPause"
+    ]
+  },
+  "bench_plugin": {
+    "file": "OSPBench2.esp",
+    "size": 59831,
+    "sha256": "9e50cf69b8a20b4872226f62c5acbc58afdbb6a952db2777d9fb703ce1265a30"
+  },
+  "cell": {
+    "editor_id": "OSPBenchCell02",
+    "local_form_id": "001000"
+  },
+  "bat_prefix": "cull",
+  "template": "photo_v2",
+  "screenshot_base_name": "ScreenShot",
+  "position_tolerance": 0.01,
+  "steps": [
+    {
+      "id": "sign044_front",
+      "kind": "measure",
+      "reference": "001034",
+      "position": [
+        8192.0,
+        10200.000091552734,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001034"
+      ]
+    },
+    {
+      "id": "sign044_back",
+      "kind": "measure",
+      "reference": "001034",
+      "position": [
+        8192.0,
+        10280.000091552734,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        180
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001034"
+      ]
+    },
+    {
+      "id": "sign045_front",
+      "kind": "measure",
+      "reference": "001035",
+      "position": [
+        10240.0,
+        10279.999908447266,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        180
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001035"
+      ]
+    },
+    {
+      "id": "sign045_back",
+      "kind": "measure",
+      "reference": "001035",
+      "position": [
+        10240.0,
+        10199.999908447266,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001035"
+      ]
+    }
+  ],
+  "mask": "corners32",
+  "crops": {
+    "sign_band": [
+      [
+        197,
+        261,
+        1083,
+        459
+      ]
+    ],
+    "side_control": [
+      [
+        0,
+        261,
+        181,
+        459
+      ],
+      [
+        1099,
+        261,
+        1280,
+        459
+      ]
+    ],
+    "overlay_watch": [
+      [
+        0,
+        464,
+        1280,
+        720
+      ]
+    ]
+  },
+  "image_checks": {
+    "crops": [
+      "sign_band",
+      "side_control",
+      "overlay_watch"
+    ],
+    "stats": [
+      "mean_r",
+      "mean_g",
+      "mean_b",
+      "std_gray"
+    ],
+    "max_stat_difference": 1.0,
+    "pixel_threshold": 64,
+    "max_pixels_over_threshold": 0,
+    "notes": "Photo and repeat are taken with the same frozen camera a few seconds apart, so inside every listed crop they must agree: each listed statistic within max_stat_difference, and no pixel differing by more than pixel_threshold in any channel. Round 24 pairs agreed within 0.08 levels with no pixel over 24; round 25 repeats, which showed the console and the compass, differed by 6 to 7 levels in sign_band and side_control and by more than 70 in overlay_watch. overlay_watch is the lower band where round 25 showed the console text and the compass; no measure uses it."
+  },
+  "criterion": {
+    "measures": {
+      "front_044": {
+        "step": "sign044_front",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_044": {
+        "step": "sign044_back",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "front_045": {
+        "step": "sign045_front",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_045": {
+        "step": "sign045_back",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_044_gray": {
+        "step": "sign044_back",
+        "stat": "mean_gray",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_045_gray": {
+        "step": "sign045_back",
+        "stat": "mean_gray",
+        "target": "sign_band",
+        "control": "side_control"
+      }
+    },
+    "repeat_tolerance": 1.0,
+    "controls": [
+      {
+        "measure": "front_044",
+        "op": ">=",
+        "value": 3.0
+      },
+      {
+        "measure": "front_045",
+        "op": ">=",
+        "value": 3.0
+      }
+    ],
+    "supported_if_all": [
+      {
+        "measure": "back_044",
+        "op": "<=",
+        "ref": "front_044",
+        "factor": 0.2
+      },
+      {
+        "measure": "back_045",
+        "op": "<=",
+        "ref": "front_045",
+        "factor": 0.2
+      },
+      {
+        "measure": "back_044_gray",
+        "op": "<=",
+        "value": 10.0
+      },
+      {
+        "measure": "back_044_gray",
+        "op": ">=",
+        "value": -10.0
+      },
+      {
+        "measure": "back_045_gray",
+        "op": "<=",
+        "value": 10.0
+      },
+      {
+        "measure": "back_045_gray",
+        "op": ">=",
+        "value": -10.0
+      }
+    ],
+    "refuted_if_any": [
+      {
+        "measure": "back_044",
+        "op": ">=",
+        "ref": "front_044",
+        "factor": 0.5
+      },
+      {
+        "measure": "back_045",
+        "op": ">=",
+        "ref": "front_045",
+        "factor": 0.5
+      }
+    ],
+    "notes": "Each measure is an in-frame contrast: mean red excess R-(G+B)/2 inside the predicted sign rectangle minus the same statistic in two side strips on the same image rows, 16 pixels outside the predicted bounds. The front views are positive controls in the same session: the sign's red lettering must be detectable from the front before the back view can say anything. The back contrast is compared with the front contrast of the same sign, so no absolute colour is used. Version 2 adds an occlusion guard: in each back view the mean gray of the sign rectangle must stay within 10 levels of the side strips, so a back face that is drawn but dark (no visible red) cannot count as not drawn. A dim back face of terrain-like brightness and little red remains undetectable without a two-sided control object; see notes."
+  },
+  "canaries": [],
+  "canary_exemption": "This packet is the canary of the whole system: it re-measures the already supported half of nif_backface_cull_v1 (a single-sided sign is not drawn from behind). It therefore carries no separate canary rule; its front views are positive controls inside the criterion.",
+  "expected_outputs": {
+    "parts": 32,
+    "marks": 32,
+    "screenshots": 8,
+    "steps": 4
+  },
+  "notes": [
+    "Poses, bench plugin and cell come from the owner's stage19 cull-poses.json and Round24 (OSPBench2.esp, runtime index 07 in that environment).",
+    "The criterion was written after looking at Round24's photographs and before any number was computed from them. Round24 is therefore a demonstration of the tools, not a prospective test; the first sequencer run is the prospective test.",
+    "Red excess depends on this sign's red lettering. If the back face were drawn it would show the same texture, mirrored; a darker but still coloured back face falls between the two thresholds and gives inconclusive.",
+    "Version 2 (16/11/2026) adds the back-view gray guard after version 1 was evaluated on Round24's red-excess numbers and before any gray statistic was computed. The guard can only make support harder. Version 1 stays in Git history with its Round24 evaluation.",
+    "What a sound criterion still needs: a positive control for a drawn back face in the same frame, for example a two-sided copy of the same sign beside it, seen from behind. Without it the packet cannot tell 'not drawn' from 'drawn so dark that neither red nor occlusion shows'.",
+    "Version 3 (16/11/2026) changes only how the run is made and checked; its criterion is identical to version 2. Version 2 stays at ../packet.json with its round 25 result (void: antialiasing was TAA).",
+    "Version 3 uses the photo_v2 parts: no part file holds both tm and Screenshot, the photograph and the repeat are separate typed parts, and settling is timed from the pose mark. It pins the executable measured in round 25, names the antialiasing value text, adds photo/repeat agreement checks, and records four autosave keys under [MAIN], the section where round 25's stored Fallout4Prefs.ini holds them (the [SaveGame] names were not found).",
+    "Version 4 (16/11/2026) changes only the settings it asks for and the antialiasing requirement; criterion, steps, bench plugin, cell, mask, crops, image checks and executable are identical to version 3. Version 3 stays at ../v3/packet.json with its round 26 result (supported on the numbers, not admissible: the antialiasing value text was unpinned and the name it asked for was not found).",
+    "Pinned from round 26 (packet version 3, session 6BE2D425B5288208BED056E76EA2EDFA): antialiasing is read from SAntiAliasing:Display, the only spelling that run found, and is met only by the exact text FXAA. ini_keys use the exact names that run found: sScreenShotBaseName:Display (value ScreenShot) and the autosave settings bSaveOnTravel, bSaveOnWait, bSaveOnRest and bSaveOnPause, which exist in the prefs list without a section. bAllowScreenShot:Display and the SaveGame and MAIN spellings of the autosave settings are dropped: no setting with those names exists.",
+    "The autosave settings are recorded, never required: the plugin aborts the run on any save, so a save can void a run but never change a verdict. A person may switch autosave off to avoid that abort. Round 26 recorded all four false because its harness had switched autosave off.",
+    "Version 4 needs a v9 build that accepts setting names without a section; the build round 26 used refuses its plan at start (bad ini line). If a run finds the antialiasing setting only as sAntiAliasing:Display, as round 25 did, the requirement stays unverified and a new version is needed: a near name never counts."
+  ]
+}

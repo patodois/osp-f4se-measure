@@ -1,0 +1,14 @@
+Original osp_measure code and documentation:
+Copyright 2026 patodois
+SPDX-License-Identifier: MIT OR Apache-2.0
+
+You may choose either the MIT License (LICENSE-MIT) or the Apache License,
+Version 2.0 (LICENSE-APACHE).
+
+This choice applies only to this project's original work. F4SE, Fallout 4,
+the external SDK, and compiler/runtime dependencies are not relicensed.
+No F4SE source files or binaries are distributed in this repository.
+See docs/provenance.md for the external SDK terms and dependency boundaries.
+
+Developed with AI assistance from GPT-6.1 Sol (OpenAI) and Claude Opus 5.5
+(Anthropic).

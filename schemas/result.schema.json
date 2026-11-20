@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "osp-measure/result/1",
+  "title": "osp_measure measurement result, schema 1",
+  "description": "Structural schema. tools/result_format.py validate_result is authoritative, and `osp_packet.py check` recomputes every decision from the numbers stored here. A result never contains image data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["result_schema", "kind", "packet", "rule", "question", "requirements", "bench_plugin",
+               "position_tolerance", "steps_requested", "crops", "mask", "criterion", "canaries", "run",
+               "environment", "steps", "decision", "verdict", "analysis"],
+  "properties": {
+    "result_schema": {"const": 1},
+    "kind": {"enum": ["sequencer_run", "retrospective"]},
+    "packet": {
+      "type": "object", "required": ["id", "version", "sha256"],
+      "properties": {"id": {"type": "string"}, "version": {"type": "integer"},
+                     "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+    },
+    "rule": {"type": "string"},
+    "question": {"type": "string"},
+    "requirements": {"type": "object", "description": "Copy of the packet's requirements."},
+    "bench_plugin": {"type": "object", "description": "Copy of the packet's bench_plugin."},
+    "position_tolerance": {"type": "number"},
+    "steps_requested": {"type": "array", "description": "Copy of the packet's steps."},
+    "crops": {"type": "object", "description": "Copy of the packet's crops."},
+    "mask": {"enum": ["corners32", "none"]},
+    "criterion": {"type": "object", "description": "Copy of the packet's criterion."},
+    "canaries": {"type": "array", "description": "Copy of the packet's canaries."},
+    "image_checks": {"type": "object", "description": "Copy of the packet's image_checks (photo_v2 packets)."},
+    "run": {
+      "type": "object",
+      "required": ["status", "status_reasons", "run_id", "session_id", "packet_sha256", "run_json_sha256",
+                   "unexpected_screenshots", "pending_screenshots"],
+      "properties": {
+        "status": {"enum": ["refused", "in_progress", "complete", "aborted", null]},
+        "status_reasons": {"type": "array", "items": {"type": "string"}},
+        "run_json_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "run_schema": {"type": ["integer", "null"]},
+        "f4se_messages": {"type": ["array", "null"], "description": "The plugin's journal of F4SE messages (run schema 2)."}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/field"}
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "requested", "settle", "position_words", "free_wall_seconds",
+                     "camera_capture", "camera_repeat", "roots", "shots"],
+        "properties": {
+          "id": {"type": "string"},
+          "kind": {"enum": ["measure", "canary"]},
+          "requested": {"type": "object", "required": ["position", "angles", "position_words"]},
+          "settle": {"type": ["object", "null"],
+                     "properties": {"outcome": {"type": "string"}, "attempts": {"type": "integer"},
+                                    "wall_seconds": {"type": ["number", "null"]},
+                                    "simulated_seconds": {"type": ["number", "null"]}}},
+          "position_words": {"type": ["array", "null"], "items": {"$ref": "#/$defs/word"}},
+          "free_wall_seconds": {"type": ["number", "null"]},
+          "camera_capture": {"$ref": "#/$defs/camera"},
+          "camera_photo": {"$ref": "#/$defs/camera", "description": "photo_v2: camera at the photograph's own mark."},
+          "photo_to_repeat_seconds": {"type": ["number", "null"]},
+          "image_agreement": {"type": "object", "description": "Per crop: pixels, threshold, pixels_over_threshold."},
+          "camera_repeat": {"$ref": "#/$defs/camera"},
+          "roots": {"type": ["array", "null"]},
+          "shots": {
+            "type": "object",
+            "properties": {"photo": {"$ref": "#/$defs/shot"}, "repeat": {"$ref": "#/$defs/shot"}}
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": ["verdict", "criterion_verdict", "numbers_only_verdict", "void_reasons", "admissible", "admissibility_reasons",
+                   "requirements", "qualification", "evaluation", "canaries"],
+      "properties": {
+        "verdict": {"$ref": "#/$defs/verdict"},
+        "criterion_verdict": {"enum": ["supported", "refuted", "inconclusive"]},
+        "numbers_only_verdict": {"enum": ["supported", "refuted", "inconclusive"],
+                                 "description": "The criterion's conditions applied to the measures while ignoring step qualification. Never a decision."},
+        "admissible": {"type": "boolean"},
+        "requirements": {"type": "object",
+                         "additionalProperties": {"enum": ["met", "violated", "unverified"]}},
+        "requirement_notes": {"type": "object", "description": "INI keys not found, what each weakens, and the antialiasing value text."}
+      }
+    },
+    "verdict": {"$ref": "#/$defs/verdict"},
+    "analysis": {"type": "object", "required": ["tool", "tool_version", "images_included"],
+                 "properties": {"images_included": {"const": false}}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "verdict": {"enum": ["supported", "refuted", "inconclusive", "void"]},
+    "word": {"type": "string", "pattern": "^[0-9A-F]{8}$"},
+    "field": {
+      "type": "object", "additionalProperties": false, "required": ["value", "filled_by", "reason"],
+      "properties": {"filled_by": {"enum": ["plugin", "tool", "person", "none"]},
+                     "reason": {"type": ["string", "null"]}}
+    },
+    "camera": {
+      "type": ["object", "null"],
+      "properties": {"complete": {"type": ["boolean", "null"]}, "state_id": {"type": ["integer", "null"]},
+                     "words": {"type": ["object", "null"]}}
+    },
+    "shot": {
+      "type": "object", "required": ["status"],
+      "properties": {
+        "status": {"enum": ["bound", "missing", "file_missing", "hash_mismatch"]},
+        "file": {"type": "string"}, "size": {"type": "integer"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "width": {"type": "integer"}, "height": {"type": "integer"},
+        "crops": {"type": "object", "additionalProperties": {"$ref": "#/$defs/stats"}}
+      }
+    },
+    "stats": {
+      "type": "object", "required": ["available", "pixels"],
+      "properties": {"available": {"type": "boolean"}, "pixels": {"type": "integer"},
+                     "mean_r": {"type": "number"}, "mean_g": {"type": "number"}, "mean_b": {"type": "number"},
+                     "mean_gray": {"type": "number"}, "std_gray": {"type": "number"},
+                     "red_excess": {"type": "number"}}
+    }
+  }
+}

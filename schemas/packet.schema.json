@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "osp-measure/packet/1",
+  "title": "osp_measure measurement packet, schema 1",
+  "description": "Structural schema. tools/packet_format.py validate_packet is authoritative: it also checks cross-references (measures, steps, crops), the closed command list, the expansion counts and the canary rules.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["packet_schema", "id", "version", "rule", "rule_status_before", "question", "estimated_minutes",
+               "requirements", "bench_plugin", "cell", "bat_prefix", "template", "screenshot_base_name",
+               "position_tolerance", "steps", "mask", "crops", "criterion", "canaries", "expected_outputs"],
+  "properties": {
+    "packet_schema": {"const": 1},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{0,63}$"},
+    "version": {"type": "integer", "minimum": 1},
+    "rule": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]{0,95}$"},
+    "rule_status_before": {"enum": ["pending", "supported", "refuted"]},
+    "question": {"type": "string", "minLength": 10, "maxLength": 400, "pattern": "\\?$"},
+    "estimated_minutes": {"type": "integer", "minimum": 1, "maximum": 600},
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["game_version", "f4se_version", "f4se_release_index", "plugin_min_version", "active_plugins",
+                   "resolution", "antialiasing", "data_unmodded", "hashed_files", "ini_keys"],
+      "properties": {
+        "game_version": {"const": "1.10.163.0"},
+        "f4se_version": {"const": "0.6.23"},
+        "f4se_release_index": {"const": 25},
+        "plugin_min_version": {"type": "integer", "minimum": 9},
+        "executable": {
+          "description": "Required from template photo_v2 on: the running executable the plugin must find before any step.",
+          "type": "object", "additionalProperties": false, "required": ["file", "size", "sha256"],
+          "properties": {"file": {"const": "Fallout4.exe"}, "size": {"type": "integer", "minimum": 1, "maximum": 1073741824},
+                         "sha256": {"$ref": "#/$defs/sha256"}}
+        },
+        "active_plugins": {
+          "type": "array", "minItems": 2, "maxItems": 254,
+          "items": {"type": "object", "additionalProperties": false, "required": ["name", "kind"],
+                    "properties": {"name": {"$ref": "#/$defs/fileName"}, "kind": {"enum": ["full", "light"]}}}
+        },
+        "resolution": {"type": "array", "items": {"type": "integer", "minimum": 64, "maximum": 16384},
+                       "minItems": 2, "maxItems": 2},
+        "antialiasing": {
+          "description": "A mode name (versions 1-2), or from photo_v2 on the exact value text that satisfies the requirement.",
+          "oneOf": [
+            {"enum": ["FXAA", "TAA", "none"]},
+            {"type": "object", "additionalProperties": false,
+             "required": ["mode", "value_text", "value_text_pinned", "other_mode_texts", "evidence"],
+             "properties": {"key": {"type": "string", "description": "The exact setting name whose effective value decides the requirement; listed in ini_keys; required once value_text_pinned is true. Absent (version 3): sAntiAliasing:Display."},
+                            "mode": {"enum": ["FXAA", "TAA", "none"]},
+                            "value_text": {"type": "string", "maxLength": 32},
+                            "value_text_pinned": {"type": "boolean"},
+                            "other_mode_texts": {"type": "object", "additionalProperties": {"type": "string", "maxLength": 32}},
+                            "evidence": {"type": "string", "minLength": 20}}}
+          ]
+        },
+        "data_unmodded": {"const": true},
+        "hashed_files": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/fileName"}},
+        "ini_keys": {"type": "array", "uniqueItems": true,
+                     "items": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9 _]{0,63}(:[A-Za-z0-9_]{1,32})?$"}}
+      }
+    },
+    "bench_plugin": {
+      "type": "object", "additionalProperties": false, "required": ["file", "size", "sha256"],
+      "properties": {
+        "file": {"allOf": [{"$ref": "#/$defs/fileName"}, {"pattern": "\\.[eE][sS][pP]$"}]},
+        "size": {"type": "integer", "minimum": 1, "maximum": 67108864},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "cell": {
+      "type": "object", "additionalProperties": false, "required": ["editor_id", "local_form_id"],
+      "properties": {"editor_id": {"type": "string", "pattern": "^[A-Za-z0-9_]{1,64}$"},
+                     "local_form_id": {"$ref": "#/$defs/localId"}}
+    },
+    "bat_prefix": {"type": "string", "pattern": "^[a-z]{1,8}$"},
+    "template": {"enum": ["photo_v2", "photo_v1"], "description": "photo_v1 is retired: readable for stored runs, never built."},
+    "screenshot_base_name": {"type": "string", "pattern": "^[A-Za-z0-9_]{1,32}$"},
+    "position_tolerance": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+    "steps": {
+      "type": "array", "minItems": 1, "maxItems": 40,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "kind", "position", "angles", "settle_seconds", "simulated_time",
+                     "free_camera_seconds", "roots"],
+        "properties": {
+          "id": {"$ref": "#/$defs/name"},
+          "kind": {"enum": ["measure", "canary"]},
+          "reference": {"$ref": "#/$defs/localId"},
+          "notes": {"type": "string"},
+          "position": {"type": "array", "items": {"type": "number"}, "minItems": 3, "maxItems": 3},
+          "angles": {"type": "array", "items": {"type": "integer", "minimum": -360, "maximum": 360},
+                     "minItems": 3, "maxItems": 3},
+          "settle_seconds": {"type": "integer", "minimum": 1, "maximum": 600},
+          "simulated_time": {"enum": ["require", "record"]},
+          "free_camera_seconds": {"type": "integer", "minimum": 0, "maximum": 60},
+          "roots": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/localId"}}
+        }
+      }
+    },
+    "mask": {"enum": ["corners32", "none"]},
+    "crops": {
+      "type": "object", "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z0-9][a-z0-9_]{0,47}$"},
+      "additionalProperties": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/rect"}}
+    },
+    "criterion": {"$ref": "#/$defs/criterion"},
+    "image_checks": {
+      "description": "Required from photo_v2 on. Photo and repeat must agree inside these crops; a difference means an overlay, a moving object or an unconverged image.",
+      "type": "object", "additionalProperties": false,
+      "required": ["crops", "stats", "max_stat_difference", "pixel_threshold", "max_pixels_over_threshold"],
+      "properties": {
+        "crops": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/name"}},
+        "stats": {"type": "array", "minItems": 1, "uniqueItems": true,
+                  "items": {"enum": ["mean_r", "mean_g", "mean_b", "mean_gray", "std_gray", "red_excess"]}},
+        "max_stat_difference": {"type": "number", "minimum": 0, "maximum": 255},
+        "pixel_threshold": {"type": "integer", "minimum": 0, "maximum": 255},
+        "max_pixels_over_threshold": {"type": "integer", "minimum": 0},
+        "notes": {"type": "string"}
+      }
+    },
+    "canaries": {
+      "type": "array",
+      "items": {"type": "object", "additionalProperties": false, "required": ["rule", "expected", "criterion"],
+                "properties": {"rule": {"type": "string"}, "expected": {"enum": ["supported", "refuted"]},
+                               "criterion": {"$ref": "#/$defs/criterion"}, "notes": {"type": "string"}}}
+    },
+    "canary_exemption": {"type": "string", "minLength": 20},
+    "expected_outputs": {
+      "type": "object", "additionalProperties": false, "required": ["parts", "marks", "screenshots", "steps"],
+      "properties": {"parts": {"type": "integer"}, "marks": {"type": "integer"},
+                     "screenshots": {"type": "integer"}, "steps": {"type": "integer"}}
+    },
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_]{0,47}$"},
+    "fileName": {"type": "string", "pattern": "^[A-Za-z0-9_][A-Za-z0-9_ .-]{0,94}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "localId": {"type": "string", "pattern": "^[0-9A-F]{6}$"},
+    "rect": {"type": "array", "items": {"type": "integer", "minimum": 0}, "minItems": 4, "maxItems": 4},
+    "condition": {
+      "type": "object",
+      "oneOf": [
+        {"additionalProperties": false, "required": ["measure", "op", "value"],
+         "properties": {"measure": {"type": "string"}, "op": {"enum": ["<", "<=", ">", ">="]},
+                        "value": {"type": "number"}}},
+        {"additionalProperties": false, "required": ["measure", "op", "ref", "factor"],
+         "properties": {"measure": {"type": "string"}, "op": {"enum": ["<", "<=", ">", ">="]},
+                        "ref": {"type": "string"}, "factor": {"type": "number"}, "offset": {"type": "number"}}}
+      ]
+    },
+    "criterion": {
+      "type": "object", "additionalProperties": false,
+      "required": ["measures", "repeat_tolerance", "controls", "supported_if_all", "refuted_if_any"],
+      "properties": {
+        "measures": {
+          "type": "object", "minProperties": 1,
+          "additionalProperties": {
+            "type": "object", "additionalProperties": false, "required": ["step", "stat", "target", "control"],
+            "properties": {"step": {"type": "string"},
+                           "stat": {"enum": ["mean_r", "mean_g", "mean_b", "mean_gray", "std_gray", "red_excess"]},
+                           "target": {"type": "string"}, "control": {"type": "string"}}
+          }
+        },
+        "repeat_tolerance": {"type": "number", "minimum": 0},
+        "controls": {"type": "array", "items": {"$ref": "#/$defs/condition"}},
+        "supported_if_all": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/condition"}},
+        "refuted_if_any": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/condition"}},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

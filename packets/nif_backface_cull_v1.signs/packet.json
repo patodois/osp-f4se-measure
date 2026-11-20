@@ -1,0 +1,328 @@
+{
+  "packet_schema": 1,
+  "id": "nif_backface_cull_v1.signs",
+  "version": 2,
+  "rule": "nif_backface_cull_v1",
+  "rule_status_before": "supported",
+  "question": "When the camera looks at the back of a single-sided sign, does the game leave the sign undrawn while the same sign is drawn from the front?",
+  "estimated_minutes": 20,
+  "requirements": {
+    "game_version": "1.10.163.0",
+    "f4se_version": "0.6.23",
+    "f4se_release_index": 25,
+    "plugin_min_version": 9,
+    "active_plugins": [
+      {
+        "name": "Fallout4.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCRobot.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop01.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCCoast.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop02.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCworkshop03.esm",
+        "kind": "full"
+      },
+      {
+        "name": "DLCNukaWorld.esm",
+        "kind": "full"
+      },
+      {
+        "name": "OSPBench2.esp",
+        "kind": "full"
+      }
+    ],
+    "resolution": [
+      1280,
+      720
+    ],
+    "antialiasing": "FXAA",
+    "data_unmodded": true,
+    "hashed_files": [
+      "Fallout4.esm",
+      "DLCRobot.esm",
+      "DLCworkshop01.esm",
+      "DLCCoast.esm",
+      "DLCworkshop02.esm",
+      "DLCworkshop03.esm",
+      "DLCNukaWorld.esm",
+      "Fallout4 - Meshes.ba2",
+      "Fallout4 - Materials.ba2",
+      "Fallout4 - Shaders.ba2",
+      "Fallout4 - Textures1.ba2"
+    ],
+    "ini_keys": [
+      "iSize W:Display",
+      "iSize H:Display",
+      "sAntiAliasing:Display",
+      "bFull Screen:Display",
+      "iPresentInterval:Display",
+      "fDefaultWorldFOV:Display",
+      "fDefault1stPersonFOV:Display",
+      "SScreenShotBaseName:Display",
+      "iScreenShotIndex:Display",
+      "bAllowScreenShot:Display",
+      "fAutosaveEveryXMins:SaveGame",
+      "bSaveOnTravel:SaveGame",
+      "bSaveOnWait:SaveGame",
+      "bSaveOnRest:SaveGame",
+      "bDisableAutoSave:SaveGame",
+      "sResourceDataDirsFinal:Archive",
+      "bInvalidateOlderFiles:Archive"
+    ]
+  },
+  "bench_plugin": {
+    "file": "OSPBench2.esp",
+    "size": 59831,
+    "sha256": "9e50cf69b8a20b4872226f62c5acbc58afdbb6a952db2777d9fb703ce1265a30"
+  },
+  "cell": {
+    "editor_id": "OSPBenchCell02",
+    "local_form_id": "001000"
+  },
+  "bat_prefix": "cull",
+  "template": "photo_v1",
+  "screenshot_base_name": "ScreenShot",
+  "position_tolerance": 0.01,
+  "steps": [
+    {
+      "id": "sign044_front",
+      "kind": "measure",
+      "reference": "001034",
+      "position": [
+        8192.0,
+        10200.000091552734,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001034"
+      ]
+    },
+    {
+      "id": "sign044_back",
+      "kind": "measure",
+      "reference": "001034",
+      "position": [
+        8192.0,
+        10280.000091552734,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        180
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001034"
+      ]
+    },
+    {
+      "id": "sign045_front",
+      "kind": "measure",
+      "reference": "001035",
+      "position": [
+        10240.0,
+        10279.999908447266,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        180
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001035"
+      ]
+    },
+    {
+      "id": "sign045_back",
+      "kind": "measure",
+      "reference": "001035",
+      "position": [
+        10240.0,
+        10199.999908447266,
+        -113.3101577758789
+      ],
+      "angles": [
+        0,
+        0,
+        0
+      ],
+      "settle_seconds": 40,
+      "simulated_time": "require",
+      "free_camera_seconds": 3,
+      "roots": [
+        "001035"
+      ]
+    }
+  ],
+  "mask": "corners32",
+  "crops": {
+    "sign_band": [
+      [
+        197,
+        261,
+        1083,
+        459
+      ]
+    ],
+    "side_control": [
+      [
+        0,
+        261,
+        181,
+        459
+      ],
+      [
+        1099,
+        261,
+        1280,
+        459
+      ]
+    ]
+  },
+  "criterion": {
+    "measures": {
+      "front_044": {
+        "step": "sign044_front",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_044": {
+        "step": "sign044_back",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "front_045": {
+        "step": "sign045_front",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_045": {
+        "step": "sign045_back",
+        "stat": "red_excess",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_044_gray": {
+        "step": "sign044_back",
+        "stat": "mean_gray",
+        "target": "sign_band",
+        "control": "side_control"
+      },
+      "back_045_gray": {
+        "step": "sign045_back",
+        "stat": "mean_gray",
+        "target": "sign_band",
+        "control": "side_control"
+      }
+    },
+    "repeat_tolerance": 1.0,
+    "controls": [
+      {
+        "measure": "front_044",
+        "op": ">=",
+        "value": 3.0
+      },
+      {
+        "measure": "front_045",
+        "op": ">=",
+        "value": 3.0
+      }
+    ],
+    "supported_if_all": [
+      {
+        "measure": "back_044",
+        "op": "<=",
+        "ref": "front_044",
+        "factor": 0.2
+      },
+      {
+        "measure": "back_045",
+        "op": "<=",
+        "ref": "front_045",
+        "factor": 0.2
+      },
+      {
+        "measure": "back_044_gray",
+        "op": "<=",
+        "value": 10.0
+      },
+      {
+        "measure": "back_044_gray",
+        "op": ">=",
+        "value": -10.0
+      },
+      {
+        "measure": "back_045_gray",
+        "op": "<=",
+        "value": 10.0
+      },
+      {
+        "measure": "back_045_gray",
+        "op": ">=",
+        "value": -10.0
+      }
+    ],
+    "refuted_if_any": [
+      {
+        "measure": "back_044",
+        "op": ">=",
+        "ref": "front_044",
+        "factor": 0.5
+      },
+      {
+        "measure": "back_045",
+        "op": ">=",
+        "ref": "front_045",
+        "factor": 0.5
+      }
+    ],
+    "notes": "Each measure is an in-frame contrast: mean red excess R-(G+B)/2 inside the predicted sign rectangle minus the same statistic in two side strips on the same image rows, 16 pixels outside the predicted bounds. The front views are positive controls in the same session: the sign's red lettering must be detectable from the front before the back view can say anything. The back contrast is compared with the front contrast of the same sign, so no absolute colour is used. Version 2 adds an occlusion guard: in each back view the mean gray of the sign rectangle must stay within 10 levels of the side strips, so a back face that is drawn but dark (no visible red) cannot count as not drawn. A dim back face of terrain-like brightness and little red remains undetectable without a two-sided control object; see notes."
+  },
+  "canaries": [],
+  "canary_exemption": "This packet is the canary of the whole system: it re-measures the already supported half of nif_backface_cull_v1 (a single-sided sign is not drawn from behind). It therefore carries no separate canary rule; its front views are positive controls inside the criterion.",
+  "expected_outputs": {
+    "parts": 24,
+    "marks": 24,
+    "screenshots": 8,
+    "steps": 4
+  },
+  "notes": [
+    "Poses, bench plugin and cell come from the owner's stage19 cull-poses.json and Round24 (OSPBench2.esp, runtime index 07 in that environment).",
+    "The criterion was written after looking at Round24's photographs and before any number was computed from them. Round24 is therefore a demonstration of the tools, not a prospective test; the first sequencer run is the prospective test.",
+    "Red excess depends on this sign's red lettering. If the back face were drawn it would show the same texture, mirrored; a darker but still coloured back face falls between the two thresholds and gives inconclusive.",
+    "Version 2 (16/11/2026) adds the back-view gray guard after version 1 was evaluated on Round24's red-excess numbers and before any gray statistic was computed. The guard can only make support harder. Version 1 stays in Git history with its Round24 evaluation.",
+    "What a sound criterion still needs: a positive control for a drawn back face in the same frame, for example a two-sided copy of the same sign beside it, seen from behind. Without it the packet cannot tell 'not drawn' from 'drawn so dark that neither red nor occlusion shows'."
+  ]
+}

@@ -1,0 +1,46 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+
+# What runs here: the public-tree gate and every host test (`make test`), which needs neither the F4SE package nor
+# the game. What does not: `make` and `make inspect`. They build the DLL against the official F4SE 0.6.23 headers,
+# which are not in this repository and are never downloaded here; they run on a maintainer's machine.
+
+jobs:
+  # Game files, images, decompiled code, local paths and secrets must never reach this public repository: this runs
+  # tools/check_public_tree.py on the commits of the push or pull request (a new branch: all of its history).
+  public-tree:
+    name: Public tree (no game files, images, decompiled code, local paths or secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - name: Check the commits of this push or pull request
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -n "$BASE" ] && [ "$BASE" != 0000000000000000000000000000000000000000 ] && git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            python3 tools/check_public_tree.py --range "$BASE..$HEAD"
+          else
+            python3 tools/check_public_tree.py --range "$HEAD"
+          fi
+      - name: Check the tracked tree
+        run: python3 tools/check_public_tree.py
+
+  # The host tests compile the plugin's headers with the runner's C++ compiler. macOS: Apple clang, the compiler
+  # the tests are developed with (GCC 16 reports a -Wmaybe-uninitialized false positive in a std::variant copy).
+  host-tests:
+    name: Host tests (no SDK, no game)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Python packages for the packet tools
+        run: |
+          python3 -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --disable-pip-version-check "numpy>=2,<3" "Pillow>=11,<13"
+          echo "$RUNNER_TEMP/venv/bin" >> "$GITHUB_PATH"
+      - name: make test
+        run: make test

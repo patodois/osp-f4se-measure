@@ -1,0 +1,14 @@
+# Build outputs, measurement runs and anything taken from a game installation stay here, outside Git.
+/build/
+__pycache__/
+*.pyc
+/.venv/
+
+# A person's setting-name list for snapshots (game data)
+osp_measure_settings.txt
+
+# Local notes and logs of coding agents
+/PROMPT*.md
+/SOL-REPORT*.md
+/last-PROMPT*.txt
+*.log
